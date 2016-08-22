@@ -3,8 +3,7 @@ Small C utility and Bash scripts to remotely freeze a Ceph RBD before taking a S
 
 rbd_freeze.c - is the utility that runs on the server with the mounted RBD's and data you wish to snapshot
 
-The below two script are expected to found in /usr/local/bin:
-rbd_freeze.sh - is the example script the utility runs to carry out checks and freeze the filesystem
+The below two script are expected to found in /usr/local/bin:rbd_freeze.sh - is the example script the utility runs to carry out checks and freeze the filesystem
 rbd_unfreeze.sh - is the example script that the utility runs to unfreeze the filesystem once the snapshot has been taken
 
 rbd_take_snap.sh - is an example script that is run on something like a backup server and is responsible for sending the RADOS notify, checking the return status, taking the RBD snapshot and mounting it
