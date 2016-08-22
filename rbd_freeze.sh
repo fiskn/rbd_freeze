@@ -20,8 +20,8 @@ if [ ! $MountPath ]; then
 fi
 ACTIVE=`find $MountPath -newermt '5 minutes ago' -type f -print | wc -l`
 if [ $ACTIVE -ne 0 ]; then
-        #logger DRaaS - $CUSTOMER - "Backups Still in progress"
-        echo DRaaS - $RBDDev - Backups Still in progress
+        logger "$RBD Still in use"
+        echo $RBD Still in use
         if [ $FORCE -ne 1 ]; then
                 exit 3
         fi
