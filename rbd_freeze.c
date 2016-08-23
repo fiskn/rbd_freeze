@@ -11,34 +11,34 @@ char* object;
 char* pool;
 
 void watch_notify2_test_cb(void *arg,
-                                  uint64_t notify_id,
-                                  uint64_t cookie,
-                                  uint64_t notifier_gid,
-                                  void *data,
-                                  size_t data_len)
+				  uint64_t notify_id,
+				  uint64_t cookie,
+				  uint64_t notifier_gid,
+				  void *data,
+				  size_t data_len)
 {
-        const char *notify_oid = 0;
-        char *temp = (char*)data+4;
-        char *temp2;
-        char action[10];
-        char rbd[20];
-        int index,ret;
-        printf("%s\n",temp);
-        if(strcmp(temp,"freeze")==0)
-        {
-                char execstring[100];
-                sprintf(execstring,"/usr/local/bin/rbd_freeze.sh %s %s",pool,object);
-                ret=system(execstring);
-                if(ret==0)
-                {
-                        printf("Ok");
-                        rados_notify_ack(io, object, notify_id, cookie, "Frozen", 6);
-                }
-                else if(ret==1)
-                {
-                        printf("Fail - No RBD");
-                        rados_notify_ack(io, object, notify_id, cookie, "NoRBD", 5);
-                }
+	const char *notify_oid = 0;
+	char *temp = (char*)data+4;
+	char *temp2;
+	char action[10];
+	char rbd[20];
+	int index,ret;
+	printf("%s\n",temp);
+	if(strcmp(temp,"freeze")==0)
+	{
+		char execstring[100];
+		sprintf(execstring,"/usr/local/bin/rbd_freeze.sh %s %s",pool,object);
+		ret=system(execstring);
+		if(ret==0)
+		{
+			printf("Ok");
+			rados_notify_ack(io, object, notify_id, cookie, "Frozen", 6);
+		}
+		else if(ret==1)
+		{
+			printf("Fail - No RBD");
+			rados_notify_ack(io, object, notify_id, cookie, "NoRBD", 5);
+		}
                 else if(ret==2)
                 {
                         printf("Fail - No Mount");
@@ -49,15 +49,15 @@ void watch_notify2_test_cb(void *arg,
                         printf("Fail - Busy");
                         rados_notify_ack(io, object, notify_id, cookie, "Busy", 7);
                 }
-                else
-                {
+		else
+		{
                         printf("Unknown Fail");
                         rados_notify_ack(io, object, notify_id, cookie, "Error", 5);
                 }
 
-        }
-        else if(strcmp(temp,"unfreeze")==0)
-        {
+	}
+	else if(strcmp(temp,"unfreeze")==0)
+	{
                 char execstring[100];
                 sprintf(execstring,"/usr/local/bin/rbd_unfreeze.sh %s %s",pool,object);
                 ret=system(execstring);
@@ -71,7 +71,7 @@ void watch_notify2_test_cb(void *arg,
                         printf("Fail");
                         rados_notify_ack(io, object, notify_id, cookie, "Error", 5);
                 }
-        }
+	}
 }
 
 void watch_notify2_test_errcb(void *arg, uint64_t cookie, int err)
@@ -80,24 +80,24 @@ void watch_notify2_test_errcb(void *arg, uint64_t cookie, int err)
 
 int main (int argc, char **argv)
 {
-        char* user_name;
-        if (argc < 4) {
-                printf("Usage is -p <pool> -o <object> -u <client.username>\n");
-                exit(0);
-        } else {
-                for (int i = 1; i < argc; i++) {
-                        if (i + 1 != argc) {
-                                if (strcmp(argv[i],"-p")==0) {
-                                        pool = argv[i + 1];
-                                } else if (strcmp(argv[i],"-o")==0) {
-                                        object = argv[i + 1];
-                                } else if (strcmp(argv[i],"-u")==0) {
+	char* user_name;
+    	if (argc < 4) { 
+        	printf("Usage is -p <pool> -o <object> -u <client.username>\n");
+        	exit(0);
+    	} else {
+        	for (int i = 1; i < argc; i++) {
+            		if (i + 1 != argc) {
+                		if (strcmp(argv[i],"-p")==0) {
+                    			pool = argv[i + 1];
+                		} else if (strcmp(argv[i],"-o")==0) {
+                    			object = argv[i + 1];
+				} else if (strcmp(argv[i],"-u")==0) {
                                         user_name = argv[i + 1];
                                 }
 
-                        }
-                }
-        }
+            		}
+        	}
+	}
         /* Declare the cluster handle and required arguments. */
         rados_t cluster;
         char cluster_name[] = "ceph";
@@ -142,24 +142,24 @@ int main (int argc, char **argv)
                 printf("\nConnected to the cluster.\n");
         }
 
-        err = rados_ioctx_create(cluster, pool, &io);
-        if (err < 0) {
-                fprintf(stderr, "%s: cannot open rados pool %s: %s\n", argv[0], pool, strerror(-err));
-                rados_shutdown(cluster);
-                exit(1);
-        }
-        printf("Creating Watcher on object %s\n",object);
-        err = rados_watch2(io,object,&cookie,watch_notify2_test_cb,watch_notify2_test_errcb,NULL);
+	err = rados_ioctx_create(cluster, pool, &io);
+	if (err < 0) {
+        	fprintf(stderr, "%s: cannot open rados pool %s: %s\n", argv[0], pool, strerror(-err));
+        	rados_shutdown(cluster);
+        	exit(1);
+	}
+	printf("Creating Watcher on object %s\n",object);
+	err = rados_watch2(io,object,&cookie,watch_notify2_test_cb,watch_notify2_test_errcb,NULL);
         if (err < 0) {
                 fprintf(stderr, "%s: cannot create watcher %s: %s\n", argv[0], pool, strerror(-err));
-                rados_ioctx_destroy(io);
+		rados_ioctx_destroy(io);
                 rados_shutdown(cluster);
                 exit(1);
         }
-        while(1){
-
-        }
-        rados_ioctx_destroy(io);
-        rados_shutdown(cluster);
+	while(1){
+		sleep(1);
+	}
+	rados_ioctx_destroy(io);
+	rados_shutdown(cluster);
 
 }
