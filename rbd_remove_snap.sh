@@ -3,7 +3,8 @@ Client=$1
 Pool=$2
 RBD=$3
 SnapName=VeeamBackup
-RBDDev=`rbd showmapped | grep $RBD | grep $SnapName | cut -d ' ' -f9`
+RBDDev=`rbd showmapped | grep $RBD | grep $SnapName | cut -d '/' -f3`
+RBDDev=/dev/$RBDDev
 logger unmounting FS
 umount $RBDDev
 if [ $? -ne 0 ]; then
