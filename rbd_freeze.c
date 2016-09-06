@@ -7,6 +7,8 @@
 
 uint64_t cookie;
 rados_ioctx_t io;
+rados_t cluster;
+char cluster_name[] = "ceph";
 char* object;
 char* pool;
 
@@ -76,6 +78,16 @@ void watch_notify2_test_cb(void *arg,
 
 void watch_notify2_test_errcb(void *arg, uint64_t cookie, int err)
 {
+        printf("Removing Watcher on object %s\n",object);
+	err = rados_unwatch2(io,cookie);
+        printf("Creating Watcher on object %s\n",object);
+        err = rados_watch2(io,object,&cookie,watch_notify2_test_cb,watch_notify2_test_errcb,NULL);
+        if (err < 0) {
+                fprintf(stderr, "%s: cannot create watcher %s: %s\n", object, pool, strerror(-err));
+                rados_ioctx_destroy(io);
+                rados_shutdown(cluster);
+                exit(1);
+        }
 }
 
 int main (int argc, char **argv)
@@ -99,8 +111,6 @@ int main (int argc, char **argv)
         	}
 	}
         /* Declare the cluster handle and required arguments. */
-        rados_t cluster;
-        char cluster_name[] = "ceph";
         uint64_t flags;
 
         /* Initialize the cluster handle with the "ceph" cluster name and the "client.admin" user */
