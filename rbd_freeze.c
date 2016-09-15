@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <syslog.h>
 
 #include <rados/librados.h>
 #include <rados/rados_types.h>
@@ -31,6 +32,7 @@ void watch_notify2_test_cb(void *arg,
 		char execstring[100];
 		sprintf(execstring,"/usr/local/bin/rbd_freeze.sh %s %s",pool,object);
 		ret=system(execstring);
+		ret=WEXITSTATUS(ret);
 		if(ret==0)
 		{
 			printf("Ok");
@@ -49,7 +51,7 @@ void watch_notify2_test_cb(void *arg,
                 else if(ret==3)
                 {
                         printf("Fail - Busy");
-                        rados_notify_ack(io, object, notify_id, cookie, "Busy", 7);
+                        rados_notify_ack(io, object, notify_id, cookie, "Busy", 4);
                 }
 		else
 		{
