@@ -11,12 +11,12 @@ rbd_take_snap.sh - is an example script that is run on something like a backup s
 rbd_remove_snap.sh - is an example script to unmount and remove the RBD snapshot
 
 rbd_freeze parameters
-Usage is -p <pool> -o <object> -u <client.username>
+Usage is -p \<pool\> -o \<object\> -u \<client.username\>
 
 Where the:   
 pool is the RADOS pool  
-object is a RADOS object. I use rbd_id.<Object_Name>  
+object is a RADOS object. I use rbd_id.\<Object_Name\>  
 client.username is a valid Ceph keyring user
 
 take/remove snap parameters  
-Usage is <RADOS client name> Pool RBD
+Usage is \<RADOS client name\> Pool RBD
