@@ -13,7 +13,7 @@ if [ ! $RBDDev ]; then
         exit 1
 fi
 
-MountPath=`mount | grep $RBDDev | cut -d ' ' -f3`
+MountPath=`mount | grep "$RBDDev " | cut -d ' ' -f3`
 if [ ! $MountPath ]; then
         echo "ERROR - Mount for RBD doesn't exist"
         exit 2
